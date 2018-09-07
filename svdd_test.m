@@ -1,6 +1,6 @@
 clear variables
 close all
-rng(123);
+rng('default');
 global is_real_data
 
 files = dir('./test_data');
@@ -9,14 +9,18 @@ for i=1:length(lists)
     disp(lists(i))
     clearvars new
     is_real_data = true;
-    data = gen_data([1,1],[1,0;0,1],30, [3,3],[2,1;1,2],100);
-%     data = csvread(lists(i));
+%     data = gen_data([1,1],[1,0;0,1],30, [3,3],[2,1;1,2],100);
+    data = csvread(lists(i));
     x = data(:, 1:end-1);
     y = data(:, end);
     c = cvpartition(y,'KFold',3);
     for j=1:c.NumTestSets   
         train_x = x(c.training(j), :); train_y = y(c.training(j));
         test_x = x(c.test(j), :); test_y = y(c.test(j));
+        
+        % -- PCA for plotting: dim=2 -- %
+        [train_x, pca_mapping] = pca(train_x, 2);
+        test_x = test_x * pca_mapping.M;
         plot_fig(train_x, train_y, test_x, test_y)
         
         % -- mapping and training classifier for train set -- %
