@@ -1,4 +1,4 @@
 # svdd
 lang matlab
 
-Needs prtools and dd_tools
+Needs prtools, dd_tools and FuRES
